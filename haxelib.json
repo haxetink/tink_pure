@@ -1,0 +1,24 @@
+{
+	"name": "tink_pure",
+	"license": "MIT",
+	"tags": [
+		"tink",
+		"cross",
+		"immutable",
+		"ds",
+		"datastructure",
+		"concurrent"
+	],
+	"classPath": "src",
+	"description": "Pure immutable data.",
+	"contributors": [
+		"back2dos"
+	],
+	"releasenote": "First version.",
+	"version": "0.1.0",
+	"url": "http://haxetink.org/tink_pure",
+	"dependencies": {
+		"tink_priority": "",
+		"tink_macro": ""
+	}
+}
