@@ -18,7 +18,5 @@
 	"version": "0.1.0",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {
-		"tink_priority": "",
-		"tink_macro": ""
 	}
 }
