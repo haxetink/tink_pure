@@ -81,9 +81,12 @@ abstract List<T>(Node<T>) from Node<T> {
       
   @:from static public function fromArray<A>(i:Array<A>):List<A> {
     var ret = null,
-        len = 0;
-    for (i in i)
-      ret = new Node(++len, i, if (ret == null) cast Node.EMPTY else [ret]);
+        len = 0,
+        pos = i.length;
+
+    while (pos --> 0)
+      ret = new Node(++len, i[pos], if (ret == null) cast Node.EMPTY else [ret]);
+      
     return ret;
   }
 
