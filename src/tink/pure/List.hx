@@ -22,7 +22,12 @@ abstract List<T>(Node<T>) from Node<T> {
   public var length(get, never):Int;
     inline function get_length()
       return this == null ? 0 : this.length;
-    
+
+  public inline function first():haxe.ds.Option<T>
+    return 
+      if (this == null) None;
+      else Some(this.value);
+
   public function new() 
     this = null;
   
@@ -133,12 +138,13 @@ class NodeIterator<T> {
   public inline function hasNext()
     return list.length > 0;
     
-  public inline function next():T {
-    var next = list.pop();
-    
-    for (i in -next.tails.length...0)
-      list.push(next.tails[ -i - 1]);
-
-    return next.value;
-  }
+  public function next():T 
+    return 
+      switch list.pop() {
+        case null: null;
+        case next:
+          for (i in -next.tails.length...0)
+            list.push(next.tails[ -i - 1]);
+          next.value;
+      }
 }
