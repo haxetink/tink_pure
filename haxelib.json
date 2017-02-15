@@ -14,9 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "First version.",
-	"version": "0.1.0",
+	"releasenote": "Added count, first. Various fixes.",
+	"version": "0.2.0",
 	"url": "http://haxetink.org/tink_pure",
-	"dependencies": {
-	}
+	"dependencies": {}
 }
