@@ -22,7 +22,6 @@ script:
   - haxelib run travix neko
   - haxelib run travix node
   - haxelib run travix python
-  - haxelib run travix java
 
 env:
   - secure: "TsuFBdNdg62kP7IWadpxOPINIu7Y6AcKO2kdNFwoM//Zgtdoccany0uYtEfRBkviSZ0ZbZQd+jzF/IddyvW07xxUfsj1LdBCR2yYb5673+kY9bR1U+Ju1hoa8B955YVgz7mb0S9HUD+6U0F5AhAdxUWH8+L4VeBgngoJyzT2ykw="
