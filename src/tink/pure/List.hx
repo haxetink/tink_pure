@@ -106,8 +106,6 @@ abstract List<T>(Node<T>) from Node<T> {
     this.value = value;
     this.length = length;
     this.tails = tails == null ? cast EMPTY : tails;
-    for (x in this.tails)
-      if (x == null) throw 'whaaaaa?';
   }
   
   public function filter(f:T->FilterResult):Node<T> {
