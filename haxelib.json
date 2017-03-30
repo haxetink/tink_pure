@@ -14,8 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Added maps.",
-	"version": "0.3.0",
+	"releasenote": "Fixed condensing and exposed it.",
+	"version": "0.3.1",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {}
 }
