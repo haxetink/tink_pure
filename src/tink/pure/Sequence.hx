@@ -3,15 +3,17 @@ package tink.pure;
 using tink.CoreApi;
 
 abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
-	
-	
 	@:from
 	public static inline function ofSingle<T>(v:T):Sequence<T>
 		return new SingleSequence(v);
 		
 	@:from
+	public static inline function ofArray<T>(v:Array<T>):Sequence<T>
+		return ofIterable(v);
+		
+	// @:from -- well somehow @:from causes recursive casts here
 	public static inline function ofIterable<T>(v:Iterable<T>):Sequence<T>
-		return (new IterableSequence(v):SequenceObject<T>);
+		return new IterableSequence(v);
 		
 	@:to
 	public function iterator():Iterator<T>
@@ -32,7 +34,7 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		return new CachedSequence(new FilterSequence(this, f));
 	
 	public inline function concat(other:Sequence<T>):Sequence<T>
-		return new ConcatSequence(this, other);
+		return new NestedSequence(ofArray([this, other]));
 	
 	public inline function empty():Bool
 		return Lambda.empty(this);
@@ -42,7 +44,7 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	
 	@:impl
 	public static inline function flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
-		return (new NestedSequence(seq):SequenceObject<T>);
+		return new NestedSequence(seq);
 	
 	public inline function find(f:T->Bool):T
 		return Lambda.find(asIterable(), f);
@@ -187,43 +189,6 @@ private class EmptyIterator<T> {
 	public function new() {}
 	public inline function hasNext() return false;
 	public inline function next():T return null;
-}
-
-class ConcatSequence<T> implements SequenceObject<T> {
-	var a:Iterable<T>;
-	var b:Iterable<T>;
-	
-	public function new(a, b) {
-		this.a = a;
-		this.b = b;
-	}
-	
-	public function iterator():Iterator<T>
-		return new ConcatIterator(a.iterator(), b.iterator());
-}
-
-class ConcatIterator<T> {
-	var a:Iterator<T>;
-	var b:Iterator<T>;
-	var current:Iterator<T>;
-	
-	public function new(a, b) {
-		this.a = a;
-		this.b = b;
-		current = a;
-	}
-	
-	public function hasNext() {
-		return switch current.hasNext() {
-			case false if(current == a):
-				current = b;
-				current.hasNext();
-			case v: v;
-		}
-	}
-	
-	public inline function next()
-		return current.next();
 }
 
 class FilterSequence<T> implements SequenceObject<T> {
