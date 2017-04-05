@@ -89,4 +89,17 @@ class TestSequence {
 		for(i in s.flatten()) sum += i;
 		return assert(sum == 55);
 	}
+	
+	public function complex(buffer:AssertionBuffer) {
+		var s:Sequence<Int> = [for(i in 0...100) i];
+		
+		var r = s
+			.filter(function(v) return v % 2 == 0)
+			.map(function(v) return v * v)
+			.concat([1,2,3])
+			.filter(function(v) return v < 50)
+			.join(',');
+		
+		return assert(r == '0,4,16,36,1,2,3');
+	}
 }

@@ -51,6 +51,17 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	
 	public inline function count(?f:T->Bool):Int
 		return Lambda.count(asIterable(), f);
+	
+	public function join(delim:String):String {
+		var buf = new StringBuf();
+		var first = true;
+		for(v in iterator()) {
+			if(!first) buf.add(',');
+			else first = false;
+			buf.add(v);
+		}
+		return buf.toString();
+	}
 }
 
 interface SequenceObject<T> {
