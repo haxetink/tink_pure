@@ -4,8 +4,6 @@ using tink.CoreApi;
 
 abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	
-	inline function new(it:Iterable<T>)
-		this = new IterableSequence(it);
 	
 	@:from
 	public static inline function ofSingle<T>(v:T):Sequence<T>
@@ -13,7 +11,7 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		
 	@:from
 	public static inline function ofIterable<T>(v:Iterable<T>):Sequence<T>
-		return new Sequence(v);
+		return (new IterableSequence(v):SequenceObject<T>);
 		
 	@:to
 	public function iterator():Iterator<T>
@@ -43,8 +41,8 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		return Lambda.exists(asIterable(), f);
 	
 	@:impl
-	public static function flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
-		return ofIterable([for(s in seq) for(v in s) v]);
+	public static inline function flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
+		return (new NestedSequence(seq):SequenceObject<T>);
 	
 	public inline function find(f:T->Bool):T
 		return Lambda.find(asIterable(), f);
