@@ -2,6 +2,7 @@ package;
 
 import tink.pure.Sequence;
 import tink.unit.*;
+import tink.unit.Assert.assert;
 
 class TestSequence {
 	public function new() {}
@@ -77,5 +78,15 @@ class TestSequence {
 		for(i in 1...size + 2)
 			buffer.assert(s.exists(function(v) return v == i) == (i <= size));
 		return buffer.done();
+	}
+	
+	public function nested(buffer:AssertionBuffer) {
+		var s1:Sequence<Int> = [1, 2, 3];
+		var s2:Sequence<Int> = [4, 5];
+		var s3:Sequence<Int> = [6, 7, 8, 9, 10];
+		var s:Sequence<Sequence<Int>> = [s1, s2, s3];
+		var sum = 0;
+		for(i in s.flatten()) sum += i;
+		return assert(sum == 55);
 	}
 }
