@@ -9,8 +9,24 @@ class TestSequence {
 	
 	public function map(buffer:AssertionBuffer) {
 		var s:Sequence<Int> = [for(i in 1...4) i];
+		var i = 0;
+		var j = 0;
+		
+		// make mapper only ever run once
+		s = s.map(function(v) {
+			i++;
+			return v * v;
+		});
+		
+		for(_ in s) j++;
+		for(_ in s) j++;
+		for(_ in s) j++;
+		
+		buffer.assert(i == 3);
+		buffer.assert(j == 9);
+		
 		var i = 1;
-		for(v in s.map(function(v) return v * v))
+		for(v in s)
 			buffer.assert(v == i * i++);
 		return buffer.done();
 	}
@@ -21,7 +37,7 @@ class TestSequence {
 		var i = 0;
 		var j = 0;
 		
-		// TODO: make sure lazy, and don't re-run
+		// make filter only ever run once
 		s = s.filter(function(v) {
 			i++;
 			return v % 2 == 0;
@@ -47,6 +63,9 @@ class TestSequence {
 		for(v in s) i++;
 		buffer.assert(i == 0);
 		buffer.assert(s.count() == 0);
+		buffer.assert(s.empty());
+		buffer.assert(!s.exists(2));
+		buffer.assert(s.toArray().length == 0);
 		return buffer.done();
 	}
 	
@@ -56,6 +75,9 @@ class TestSequence {
 		for(v in s) i++;
 		buffer.assert(i == 1);
 		buffer.assert(s.count() == 1);
+		buffer.assert(!s.empty());
+		buffer.assert(s.exists(2));
+		buffer.assert(s.toArray().length == 1);
 		return buffer.done();
 	}
 	
@@ -67,6 +89,9 @@ class TestSequence {
 		for(v in s) i += v;
 		buffer.assert(i == 55);
 		buffer.assert(s.count() == 10);
+		buffer.assert(!s.empty());
+		buffer.assert(s.exists(2));
+		buffer.assert(s.toArray().length == 10);
 		return buffer.done();
 	}
 	

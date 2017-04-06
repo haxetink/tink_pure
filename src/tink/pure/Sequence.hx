@@ -20,37 +20,37 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		return this == null ? EmptyIterator.inst : this.iterator();
 		
 	@:to
-	public function asIterable():Iterable<T>
+	public function toIterable():Iterable<T>
 		return this == null ? EmptySequence.inst : this;
 		
 	@:to
-	public inline function array():Array<T>
-		return Lambda.array(this);
+	public inline function toArray():Array<T>
+		return Lambda.array(toIterable());
 		
 	public inline function map<A>(f:T->A):Sequence<A>
 		return new CachedSequence(new MapSequence(this, f));
 	
-	public inline function filter(f:T->Bool):Sequence<T>
+	public inline function filter(f:Filter<T>):Sequence<T>
 		return new CachedSequence(new FilterSequence(this, f));
 	
 	public inline function concat(other:Sequence<T>):Sequence<T>
 		return new NestedSequence(ofArray([this, other]));
 	
 	public inline function empty():Bool
-		return Lambda.empty(this);
+		return Lambda.empty(toIterable());
 	
-	public inline function exists(f:T->Bool):Bool
-		return Lambda.exists(asIterable(), f);
+	public inline function exists(f:Filter<T>):Bool
+		return Lambda.exists(toIterable(), f);
 	
 	@:impl
 	public static inline function flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
 		return new NestedSequence(seq);
 	
-	public inline function find(f:T->Bool):T
-		return Lambda.find(asIterable(), f);
+	public inline function find(f:Filter<T>):T
+		return Lambda.find(toIterable(), f);
 	
-	public inline function count(?f:T->Bool):Int
-		return Lambda.count(asIterable(), f);
+	public inline function count(?f:Filter<T>):Int
+		return Lambda.count(toIterable(), f);
 	
 	public function join(delim:String):String {
 		var buf = new StringBuf();
@@ -62,6 +62,13 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		}
 		return buf.toString();
 	}
+}
+
+@:callable
+private abstract Filter<T>(T->Bool) from T->Bool to T->Bool {
+	@:from
+	public static inline function ofConst<T>(v:T):Filter<T>
+		return function(i:T) return i == v;
 }
 
 interface SequenceObject<T> {
@@ -83,15 +90,15 @@ class NestedSequence<T> implements SequenceObject<T> {
 		this.seq = seq;
 		
 	public function iterator():Iterator<T>
-		return new NestedIterator(seq);
+		return new NestedIterator(seq.iterator());
 }
 
 class NestedIterator<T> {
 	var iter:Iterator<Sequence<T>>;
 	var current:Iterator<T>;
 	
-	public function new(seq:Sequence<Sequence<T>>) {
-		iter = seq.iterator();
+	public function new(iter) {
+		this.iter = iter;
 		advance();
 	}
 		
@@ -141,14 +148,12 @@ class SingleIterator<T> {
 }
 
 class CachedSequence<T> implements SequenceObject<T> {
-	var seq:Sequence<T>;
 	var cache:Array<T>;
 	var iter:Iterator<T>;
 	var finished = false;
 	
 	public function new(seq:Sequence<T>) {
-		this.seq = seq;
-		iter = seq.iterator();
+		iter = seq.iterator(); // make sure we ever iterate the underlying sequence once
 		cache = [];
 	}
 	
@@ -192,16 +197,16 @@ private class EmptyIterator<T> {
 }
 
 class FilterSequence<T> implements SequenceObject<T> {
-	var iter:Iterable<T>;
+	var seq:Sequence<T>;
 	var f:T->Bool;
 	
-	public function new(iter, f) {
-		this.iter = iter;
+	public function new(seq, f) {
+		this.seq = seq;
 		this.f = f;
 	}
 	
 	public inline function iterator():Iterator<T>
-		return new FilterIterator(iter.iterator(), f);
+		return new FilterIterator(seq.iterator(), f);
 }
 
 class FilterIterator<T> {
@@ -243,16 +248,16 @@ class FilterIterator<T> {
 }
 
 class MapSequence<T, A> implements SequenceObject<A> {
-	var iter:Iterable<T>;
+	var seq:Sequence<T>;
 	var f:T->A;
 	
-	public function new(iter, f) {
-		this.iter = iter;
+	public function new(seq, f) {
+		this.seq = seq;
 		this.f = f;
 	}
 	
 	public inline function iterator():Iterator<A>
-		return new MapIterator(iter.iterator(), f);
+		return new MapIterator(seq.iterator(), f);
 }
 
 class MapIterator<T, A> {
