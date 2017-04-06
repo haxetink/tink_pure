@@ -37,6 +37,9 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	public inline function concat(other:Sequence<T>):Sequence<T>
 		return new NestedSequence(ofArray([this, other]));
 	
+	public inline function slice<A>(start:Int, ?end:Int):Sequence<T>
+		return new SlicedSequence(this, start, end);
+	
 	public inline function empty():Bool
 		return Lambda.empty(toIterable());
 	
@@ -55,6 +58,9 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	
 	public inline function count(?f:Filter<T>):Int
 		return Lambda.count(toIterable(), f);
+	
+	public inline function fold<A>(f:T->A->A, first:A):A
+		return Lambda.fold(toIterable(), f, first);
 	
 	public function join(delim:String):String {
 		var buf = new StringBuf();
@@ -120,6 +126,55 @@ class NestedIterator<T> {
 		current = iter.hasNext() ? iter.next().iterator() : null;
 		
 }
+
+class SlicedSequence<T> implements SequenceObject<T> {
+	public var seq:Sequence<T>;
+	var start:Int;
+	var end:Null<Int>;
+	
+	public function new(seq, start, end) {
+		this.seq = seq;
+		this.start = start;
+		this.end = end;
+	}
+	
+	public function iterator():Iterator<T>
+		return new SlicedIterator(seq.iterator(), start, end);
+} 
+
+class SlicedIterator<T> {
+	public var iter:Iterator<T>;
+	var start:Int;
+	var end:Null<Int>;
+	var pos = 0;
+	var prepared = false;
+	
+	public function new(iter, start, end) {
+		this.iter = iter;
+		this.start = start;
+		this.end = end;
+	}
+	
+	public function hasNext() {
+		prepare();
+		return end != null && pos >= end ? false : iter.hasNext();
+	}
+	
+	public function next() {
+		prepare();
+		return end != null && pos++ >= end ? null : iter.next();
+	}
+	
+	function prepare() {
+		if(prepared) return;
+		prepared = true;
+		while(pos < start) {
+			if(iter.hasNext()) iter.next();
+			else break;
+			pos++;
+		}
+	}
+} 
 
 class SingleSequence<T> implements SequenceObject<T> {
 	var item:T;

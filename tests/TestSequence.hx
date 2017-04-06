@@ -140,4 +140,18 @@ class TestSequence {
 		buffer.assert(s.count() == 100);
 		return buffer.done();
 	}
+	
+	@:variant(100, 20, 10, 145)
+	@:variant(15, 20, 5, 60)
+	@:variant(5, 20, 0, 0)
+	@:variant(100, null, 90, 4905)
+	@:variant(15, null, 5, 60)
+	@:variant(5, null, 0, 0)
+	public function slice(items:Int, end:Null<Int>, count:Int, sum:Int, buffer:AssertionBuffer) {
+		var s:Sequence<Int> = [for(i in 0...items) i];
+		var sliced = s.slice(10, end);
+		buffer.assert(sliced.count() == count);
+		buffer.assert(sliced.fold(function(i, sum) return i + sum, 0) == sum);
+		return buffer.done();
+	}
 }
