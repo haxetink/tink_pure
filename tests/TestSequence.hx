@@ -111,14 +111,17 @@ class TestSequence {
 		var s3:Sequence<Int> = [6, 7, 8, 9, 10];
 		var s:Sequence<Sequence<Int>> = [s1, s2, s3];
 		var sum = 0;
-		for(i in s.flatten()) sum += i;
+		for(i in s._flatten()) sum += i;
 		return assert(sum == 55);
 	}
 	
 	public function complex(buffer:AssertionBuffer) {
-		var s:Sequence<Int> = [for(i in 0...100) i];
+		var s1:Sequence<Int> = [for(i in 0...50) i];
+		var s2:Sequence<Int> = [for(i in 50...99) i];
+		var s3:Sequence<Int> = 99;
+		var s4:Sequence<Int> = null;
 		
-		var r = s
+		var r = Sequence.flatten([s1, s2, s3, s4])
 			.filter(function(v) return v % 2 == 0)
 			.map(function(v) return v * v)
 			.concat([1,2,3])
@@ -126,5 +129,15 @@ class TestSequence {
 			.join(',');
 		
 		return assert(r == '0,4,16,36,1,2,3');
+	}
+	
+	public function purity(buffer:AssertionBuffer) {
+		var a = [for(i in 0...100) i];
+		var s:Sequence<Int> = a;
+		
+		buffer.assert(s.count() == 100);
+		a.push(101);
+		buffer.assert(s.count() == 100);
+		return buffer.done();
 	}
 }

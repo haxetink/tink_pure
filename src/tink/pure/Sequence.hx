@@ -9,10 +9,11 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		
 	@:from
 	public static inline function ofArray<T>(v:Array<T>):Sequence<T>
-		return ofIterable(v);
+		return ofIterable(v.copy());
 		
 	// @:from -- well somehow @:from causes recursive casts here
-	public static inline function ofIterable<T>(v:Iterable<T>):Sequence<T>
+	// don't expose this, we can't guarantee purity on arbitary iterables
+	static inline function ofIterable<T>(v:Iterable<T>):Sequence<T>
 		return new IterableSequence(v);
 		
 	@:to
@@ -42,8 +43,11 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	public inline function exists(f:Filter<T>):Bool
 		return Lambda.exists(toIterable(), f);
 	
-	@:impl
-	public static inline function flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
+	@:impl // https://github.com/HaxeFoundation/haxe/issues/6157
+	public static inline function _flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
+		return flatten(seq);
+	
+	public static inline function flatten<T>(seq:Sequence<Sequence<T>>):Sequence<T>
 		return new NestedSequence(seq);
 	
 	public inline function find(f:Filter<T>):T
