@@ -37,8 +37,11 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	public inline function concat(other:Sequence<T>):Sequence<T>
 		return new NestedSequence(ofArray([this, other]));
 	
-	public inline function slice<A>(start:Int, ?end:Int):Sequence<T>
+	public inline function slice(start:Int, ?end:Int):Sequence<T>
 		return new SlicedSequence(this, start, end);
+		
+	public inline function reverse():Sequence<T>
+		return new ReversedSequence(this);
 	
 	public inline function empty():Bool
 		return Lambda.empty(toIterable());
@@ -47,10 +50,10 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 		return Lambda.exists(toIterable(), f);
 	
 	@:impl // https://github.com/HaxeFoundation/haxe/issues/6157
-	public static inline function _flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
-		return flatten(seq);
+	public static inline function flatten<T>(seq:SequenceObject<Sequence<T>>):Sequence<T>
+		return nested(seq);
 	
-	public static inline function flatten<T>(seq:Sequence<Sequence<T>>):Sequence<T>
+	public static inline function nested<T>(seq:Sequence<Sequence<T>>):Sequence<T>
 		return new NestedSequence(seq);
 	
 	public inline function find(f:Filter<T>):T
@@ -85,7 +88,7 @@ interface SequenceObject<T> {
 	function iterator():Iterator<T>;
 }
 
-class IterableSequence<T> implements SequenceObject<T> {
+private class IterableSequence<T> implements SequenceObject<T> {
 	var iterable:Iterable<T>;
 	public function new(iterable)
 		this.iterable = iterable;
@@ -93,7 +96,25 @@ class IterableSequence<T> implements SequenceObject<T> {
 		return iterable.iterator();
 }
 
-class NestedSequence<T> implements SequenceObject<T> {
+private class ReversedSequence<T> implements SequenceObject<T> {
+	var seq:Sequence<T>;
+	var reversed:Array<T>;
+	
+	public function new(seq)
+		this.seq = seq;
+		
+	public function iterator():Iterator<T> {
+		if(reversed == null) {
+			// TODO: currently the underlying sequence is completely iterated at once,
+			// need to figure out how to make it per-item lazy, if even possible
+			reversed = seq.toArray();
+			reversed.reverse();
+		}
+		return reversed.iterator();
+	}
+}
+
+private class NestedSequence<T> implements SequenceObject<T> {
 	var seq:Sequence<Sequence<T>>;
 	
 	public function new(seq)
@@ -103,7 +124,7 @@ class NestedSequence<T> implements SequenceObject<T> {
 		return new NestedIterator(seq.iterator());
 }
 
-class NestedIterator<T> {
+private class NestedIterator<T> {
 	var iter:Iterator<Sequence<T>>;
 	var current:Iterator<T>;
 	
@@ -127,7 +148,7 @@ class NestedIterator<T> {
 		
 }
 
-class SlicedSequence<T> implements SequenceObject<T> {
+private class SlicedSequence<T> implements SequenceObject<T> {
 	public var seq:Sequence<T>;
 	var start:Int;
 	var end:Null<Int>;
@@ -142,7 +163,7 @@ class SlicedSequence<T> implements SequenceObject<T> {
 		return new SlicedIterator(seq.iterator(), start, end);
 } 
 
-class SlicedIterator<T> {
+private class SlicedIterator<T> {
 	public var iter:Iterator<T>;
 	var start:Int;
 	var end:Null<Int>;
@@ -176,7 +197,7 @@ class SlicedIterator<T> {
 	}
 } 
 
-class SingleSequence<T> implements SequenceObject<T> {
+private class SingleSequence<T> implements SequenceObject<T> {
 	var item:T;
 	
 	public inline function new(item)
@@ -186,7 +207,7 @@ class SingleSequence<T> implements SequenceObject<T> {
 		return new SingleIterator(item);
 }
 
-class SingleIterator<T> {
+private class SingleIterator<T> {
 	var item:T;
 	var consumed = false;
 	
@@ -206,7 +227,7 @@ class SingleIterator<T> {
 			}
 }
 
-class CachedSequence<T> implements SequenceObject<T> {
+private class CachedSequence<T> implements SequenceObject<T> {
 	var cache:Array<T>;
 	var iter:Iterator<T>;
 	var finished = false;
@@ -255,7 +276,7 @@ private class EmptyIterator<T> {
 	public inline function next():T return null;
 }
 
-class FilterSequence<T> implements SequenceObject<T> {
+private class FilterSequence<T> implements SequenceObject<T> {
 	var seq:Sequence<T>;
 	var f:T->Bool;
 	
@@ -268,33 +289,48 @@ class FilterSequence<T> implements SequenceObject<T> {
 		return new FilterIterator(seq.iterator(), f);
 }
 
-class FilterIterator<T> {
+enum Upcoming<T> {
+	Unknown;
+	None;
+	Some(v:T);
+}
+private class FilterIterator<T> {
 	
 	var iter:Iterator<T>;
 	var f:T->Bool;
-	var upcoming:Option<T> = None;
+	var upcoming:Upcoming<T> = Unknown;
 	
 	public function new(iter, f) {
 		this.iter = iter;
 		this.f = f;
-		prepareNext();
 	}
 		
 	public inline function hasNext() {
-		return upcoming != None;
+		return switch upcoming {
+			case Some(v):
+				true;
+			case None:
+				false;
+			case Unknown:
+				advance();
+				hasNext();
+		}
 	}
 		
 	public function next() {
 		return switch upcoming {
+			case Some(v):
+				upcoming = Unknown;
+				v;
 			case None:
 				null;
-			case Some(v):
-				prepareNext();
-				v;
+			case Unknown:
+				advance();
+				next();
 		}
 	}
 	
-	function prepareNext() {
+	function advance() {
 		while(iter.hasNext()) {
 			var item = iter.next();
 			if(f(item)) {
@@ -306,7 +342,7 @@ class FilterIterator<T> {
 	}
 }
 
-class MapSequence<T, A> implements SequenceObject<A> {
+private class MapSequence<T, A> implements SequenceObject<A> {
 	var seq:Sequence<T>;
 	var f:T->A;
 	
@@ -319,7 +355,7 @@ class MapSequence<T, A> implements SequenceObject<A> {
 		return new MapIterator(seq.iterator(), f);
 }
 
-class MapIterator<T, A> {
+private class MapIterator<T, A> {
 	
 	var iter:Iterator<T>;
 	var f:T->A;
