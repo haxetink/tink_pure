@@ -12,11 +12,10 @@ class TestSequence {
 		var s:Sequence<Int> = [for(i in 1...4) i];
 		var i = 0;
 		
-		// make mapper only ever run once
 		s = s.map(function(v) {
 			i++;
 			return v * v;
-		});
+		}).cache();
 		
 		asserts.assert(i == 0);
 		
@@ -42,11 +41,10 @@ class TestSequence {
 		var check = [2,4,6,8,10];
 		var i = 0;
 		
-		// make filter only ever run once
 		s = s.filter(function(v) {
 			i++;
 			return v % 2 == 0;
-		});
+		}).cache();
 		
 		asserts.assert(i == 0);
 		

@@ -28,11 +28,14 @@ abstract Sequence<T>(SequenceObject<T>) from SequenceObject<T> {
 	public inline function toArray():Array<T>
 		return Lambda.array(toIterable());
 		
+	public inline function cache():Sequence<T>
+		return new CachedSequence(this);
+		
 	public inline function map<A>(f:T->A):Sequence<A>
-		return new CachedSequence(new MapSequence(this, f));
+		return new MapSequence(this, f);
 	
 	public inline function filter(f:Filter<T>):Sequence<T>
-		return new CachedSequence(new FilterSequence(this, f));
+		return new FilterSequence(this, f);
 	
 	public inline function concat(other:Sequence<T>):Sequence<T>
 		return new NestedSequence(ofArray([this, other]));
