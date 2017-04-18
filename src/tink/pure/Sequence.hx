@@ -289,16 +289,11 @@ private class FilterSequence<T> implements SequenceObject<T> {
 		return new FilterIterator(seq.iterator(), f);
 }
 
-enum Upcoming<T> {
-	Unknown;
-	None;
-	Some(v:T);
-}
 private class FilterIterator<T> {
 	
 	var iter:Iterator<T>;
 	var f:T->Bool;
-	var upcoming:Upcoming<T> = Unknown;
+	var upcoming:Option<T>;
 	
 	public function new(iter, f) {
 		this.iter = iter;
@@ -307,26 +302,26 @@ private class FilterIterator<T> {
 		
 	public inline function hasNext() {
 		return switch upcoming {
+			case null:
+				advance();
+				hasNext();
 			case Some(v):
 				true;
 			case None:
 				false;
-			case Unknown:
-				advance();
-				hasNext();
 		}
 	}
 		
 	public function next() {
 		return switch upcoming {
+			case null:
+				advance();
+				next();
 			case Some(v):
-				upcoming = Unknown;
+				upcoming = null;
 				v;
 			case None:
 				null;
-			case Unknown:
-				advance();
-				next();
 		}
 	}
 	
