@@ -171,7 +171,6 @@ private class SlicedIterator<T> {
 	var start:Int;
 	var end:Null<Int>;
 	var pos = 0;
-	var prepared = false;
 	
 	public function new(iter, start, end) {
 		this.iter = iter;
@@ -180,18 +179,16 @@ private class SlicedIterator<T> {
 	}
 	
 	public function hasNext() {
-		prepare();
+		skipToStart();
 		return end != null && pos >= end ? false : iter.hasNext();
 	}
 	
 	public function next() {
-		prepare();
+		skipToStart();
 		return end != null && pos++ >= end ? null : iter.next();
 	}
 	
-	function prepare() {
-		if(prepared) return;
-		prepared = true;
+	function skipToStart() {
 		while(pos < start) {
 			if(iter.hasNext()) iter.next();
 			else break;
