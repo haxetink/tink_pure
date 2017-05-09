@@ -97,5 +97,15 @@ using tink.CoreApi;
 
   @:op(a + b) @:extern inline static function lAddMutable<K, V>(other:Map<K, V>, m:Mapping<K, V>):Mapping<K, V> 
     return merge([other, m]);
+    
+  #if tink_json
+  
+  @:to function toRepresentation():tink.json.Representation<Map<K, V>> 
+    return new tink.json.Representation(toMutable());
+    
+  @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>)
+    return Mapping.ofMutable(rep.get());
+    
+  #end
 
 }
