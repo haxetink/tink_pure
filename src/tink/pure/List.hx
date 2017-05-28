@@ -22,11 +22,12 @@ abstract List<T>(Node<T>) from Node<T> {
   public var length(get, never):Int;
     inline function get_length()
       return this == null ? 0 : this.length;
-
-  public inline function first():haxe.ds.Option<T>
-    return 
-      if (this == null) None;
-      else Some(this.value);
+  
+  public function first(?predicate:T->Bool):haxe.ds.Option<T> {
+    for (x in iterator())
+      if (predicate == null || predicate(x)) return Some(x);
+    return None;
+  }
 
   public function new() 
     this = null;
