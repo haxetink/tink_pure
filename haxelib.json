@@ -14,8 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Fixed condensing and exposed it.",
-	"version": "0.3.1",
+	"releasenote": "Allow passing predicate to list.first",
+	"version": "0.3.2",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {}
 }
