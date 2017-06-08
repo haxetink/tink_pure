@@ -23,10 +23,13 @@ class RunTests {
     ];
     
   }
+  
+  
 
   static function main() 
     Runner.run(TestBatch.make([
-      new RunTests()
+      new RunTests(),
+      new TestSequence(),
     ])).handle(function(result) {
       exit(result.summary().failures.length);
     });    
