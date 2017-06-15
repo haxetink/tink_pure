@@ -48,6 +48,13 @@ abstract List<T>(Node<T>) from Node<T> {
           this.tails.concat([that.node()])
         );
   
+  public function append(value:T):List<T> 
+    return 
+      if (this == null)
+        new Node(1, value);
+      else
+        concat(new Node(1, value));
+  
   public function prepend(value:T):List<T> 
     return 
       if (this == null)
