@@ -49,11 +49,7 @@ abstract List<T>(Node<T>) from Node<T> {
         );
   
   public function append(value:T):List<T> 
-    return 
-      if (this == null)
-        new Node(1, value);
-      else
-        concat(new Node(1, value));
+    return concat(new Node(1, value));
   
   public function prepend(value:T):List<T> 
     return 
