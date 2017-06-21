@@ -1,5 +1,7 @@
 import tink.pure.List;
 
+import tink.unit.Assert.assert;
+
 @:asserts
 class ListTest {
   public function new() {}
@@ -18,5 +20,10 @@ class ListTest {
     var i = 0;
     for(item in list) asserts.assert(item == i++);
     return asserts.done();
+  }
+  
+  public function single() {
+    var list = List.single(1);
+    return assert(list.length == 1);
   }
 }

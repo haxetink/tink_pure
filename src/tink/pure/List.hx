@@ -48,8 +48,12 @@ abstract List<T>(Node<T>) from Node<T> {
           this.tails.concat([that.node()])
         );
   
-  public function append(value:T):List<T> 
-    return concat(new Node(1, value));
+  public function append(value:T):List<T>
+    return 
+      if (this == null)
+        new Node(1, value);
+      else
+        new Node(this.length + 1, this.value, this.tails.concat([new Node(1, value)]));
   
   public function prepend(value:T):List<T> 
     return 
@@ -87,6 +91,9 @@ abstract List<T>(Node<T>) from Node<T> {
     return 
       if (this == null) null;
       else this.filter(f);
+      
+  static public inline function single<A>(v:A):List<A>
+    return new Node(1, v);
       
   @:from static public function fromArray<A>(i:Array<A>):List<A> {
     var ret = null,
