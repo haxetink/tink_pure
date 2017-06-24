@@ -92,6 +92,9 @@ abstract List<T>(Node<T>) from Node<T> {
       if (this == null) null;
       else this.filter(f);
       
+  public function map<A>(f:T->A):List<A>
+    return fromArray([for(i in iterator()) f(i)]);
+      
   static public inline function single<A>(v:A):List<A>
     return new Node(1, v);
       
