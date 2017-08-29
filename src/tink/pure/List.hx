@@ -28,6 +28,16 @@ abstract List<T>(Node<T>) from Node<T> {
       if (predicate == null || predicate(x)) return Some(x);
     return None;
   }
+  
+  public function last(?predicate:T->Bool):haxe.ds.Option<T> {
+    var found = false;
+    var ret = null;
+    for (x in iterator()) if (predicate == null || predicate(x)) {
+      found = true;
+      ret = x;
+    }
+    return found ? Some(ret) : None;
+  }
 
   public function new() 
     this = null;
