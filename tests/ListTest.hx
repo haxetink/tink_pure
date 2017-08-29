@@ -26,4 +26,20 @@ class ListTest {
     var list = List.single(1);
     return assert(list.length == 1);
   }
+  
+  public function first() {
+    var list = List.fromArray([1,2,3,4]);
+    asserts.assert(list.first().match(Some(1)));
+    asserts.assert(list.first(function(v) return v % 2 == 0).match(Some(2)));
+    asserts.assert(list.first(function(v) return v > 5).match(None));
+    return asserts.done();
+  }
+  
+  public function last() {
+    var list = List.fromArray([1,2,3,4]);
+    asserts.assert(list.last().match(Some(4)));
+    asserts.assert(list.last(function(v) return v % 2 == 0).match(Some(4)));
+    asserts.assert(list.last(function(v) return v > 5).match(None));
+    return asserts.done();
+  }
 }
