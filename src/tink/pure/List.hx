@@ -97,6 +97,9 @@ abstract List<T>(Node<T>) from Node<T> {
       
   static public inline function single<A>(v:A):List<A>
     return new Node(1, v);
+    
+  public function toArray():Array<T>
+    return [for(v in iterator()) v];
       
   @:from static public function fromArray<A>(i:Array<A>):List<A> {
     var ret = null,
