@@ -28,6 +28,7 @@ class RunTests {
     Runner.run(TestBatch.make([
       new RunTests(),
       new ListTest(),
+      new MappingTest(),
     ])).handle(function(result) {
       exit(result.summary().failures.length);
     });    

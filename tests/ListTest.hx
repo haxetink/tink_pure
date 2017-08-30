@@ -42,4 +42,16 @@ class ListTest {
     asserts.assert(list.last(function(v) return v > 5).match(None));
     return asserts.done();
   }
+  
+  #if tink_json
+  public function json() {
+    var list = List.fromArray([1,2,3,4]);
+    var str = tink.Json.stringify(list);
+    asserts.assert(str == '[1,2,3,4]');
+    var parsed:List<Int> = tink.Json.parse(str);
+    var i = 0;
+    for(v in parsed) asserts.assert(v == ++i);
+    return asserts.done();
+  }
+  #end
 }
