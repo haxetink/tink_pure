@@ -100,11 +100,13 @@ using tink.CoreApi;
     
   #if tink_json
   
-  @:to function toRepresentation():tink.json.Representation<Map<K, V>> 
-    return new tink.json.Representation(toMutable());
+  // TODO: seems that @:multiType is preventing the below to work
+  
+  // @:to function toRepresentation():tink.json.Representation<Map<K, V>> 
+  //   return new tink.json.Representation(toMutable());
     
-  @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>)
-    return Mapping.ofMutable(rep.get());
+  // @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>)
+  //   return Mapping.ofMutable(rep.get());
     
   #end
 
