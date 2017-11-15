@@ -29,6 +29,7 @@ class RunTests {
       new RunTests(),
       new ListTest(),
       new MappingTest(),
+      new SliceTest(),
     ])).handle(function(result) {
       exit(result.summary().failures.length);
     });    

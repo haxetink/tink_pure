@@ -17,5 +17,8 @@
 	"releasenote": "Allow passing predicate to list.first",
 	"version": "0.3.2",
 	"url": "http://haxetink.org/tink_pure",
-	"dependencies": {}
+	"dependencies": {
+		"tink_slice": "",
+		"tink_core": ""
+	}
 }
