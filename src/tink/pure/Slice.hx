@@ -8,7 +8,7 @@ abstract Slice<T>(MSlice<T>) to MSlice<T> {
   inline function new(v:MSlice<T>) 
     this = v;
 
-  @:arrayAccess inline function get(index:Int)
+  @:arrayAccess inline function get(index:Int):T
     return this[index];
 
   static function make<T>(v:MSlice<T>)
