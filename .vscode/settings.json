@@ -1,5 +1,5 @@
 {
     "haxe.displayConfigurations": [
-        ["tests.hxml", "-lib", "travix", "-lib", "tink_unittest"]
+        ["tests.hxml", "-lib", "travix", "-lib", "tink_unittest", "-lib", "tink_pure"]
     ]
 }
