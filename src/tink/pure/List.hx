@@ -57,6 +57,12 @@ abstract List<T>(Node<T>) from Node<T> {
           this.value, 
           this.tails.concat([that.node()])
         );
+        
+  public function sort(compare:T->T->Int) {
+    var arr = toArray();
+    arr.sort(compare);
+    return fromArray(arr);
+  }
   
   public function append(value:T):List<T>
     return 
