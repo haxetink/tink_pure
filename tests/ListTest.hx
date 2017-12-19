@@ -43,6 +43,14 @@ class ListTest {
     return asserts.done();
   }
   
+  public function sort() {
+    var list = List.fromArray([3,4,1,2]);
+    var sorted = list.sort(Reflect.compare);
+    asserts.assert(sorted.first().match(Some(1)));
+    asserts.assert(sorted.last().match(Some(4)));
+    return asserts.done();
+  }
+  
   #if tink_json
   public function json() {
     var list = List.fromArray([1,2,3,4]);
