@@ -3,6 +3,7 @@ package tink.pure;
 import tink.Slice as MSlice;
 
 @:forward(length, iterator)
+@:pure
 abstract Slice<T>(MSlice<T>) to MSlice<T> {
 
   inline function new(v:MSlice<T>) 
