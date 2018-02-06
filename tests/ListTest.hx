@@ -53,7 +53,7 @@ class ListTest {
   
   public function replace() {
     var list = List.fromArray([1,2,1,3,1,4]);
-    list.replace(1, 5);
+    list = list.replace(1, 5);
     return assert(list.toArray().join(',') == '5,2,5,3,5,4');
   }
   
