@@ -77,6 +77,9 @@ abstract List<T>(Node<T>) from Node<T> {
         new Node(1, value);
       else
         new Node(this.length + 1, value, [this]);
+        
+  public function replace(value:T, by:T):List<T>
+    return fromArray([for(v in iterator()) if(v == value) by else v]);
   
   public inline function exists(predicate:T->Bool) {
     var ret = false;
