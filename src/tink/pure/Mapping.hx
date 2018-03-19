@@ -13,6 +13,9 @@ using tink.CoreApi;
   
   public inline function new() this = null;
   
+  /**
+    Returns true if `key` has a mapping, false otherwise.
+  **/
   public function exists(key:K) {
 
     for (p in this)
@@ -22,6 +25,9 @@ using tink.CoreApi;
     return false;
   }
   
+  /**
+    Returns the value for `key`.
+  **/
   @:arrayAccess public function get(key:K) {
 
     for (p in this)
@@ -31,18 +37,31 @@ using tink.CoreApi;
     return null;
   }
   
+  /**
+    Clone this `Mapping` but without the specified key
+  **/
   public function without(key:K) 
     return this.prepend({ key: key, isset: false, value: null, condensed: null });
   
+  /**
+    Clone this `Mapping` and add the specified key-value pair
+  **/
   public function with(key:K, value:V):Mapping<K, V> 
     return this.prepend({ key: key, isset: true, value: value, condensed: null });
 
   @:extern inline function alloc():Map<K, V> return new Map();
 
   //Everything beyond this point is for the brave
+  
+  /**
+   *  Returns an Iterator over the values of `this` Mapping.
+   */
   @:extern inline public function iterator()
     return getCondensed().or(alloc).iterator();
 
+  /**
+   *  Returns an Iterator over the keys of `this` Mapping.
+   */
   @:extern inline public function keys()
     return getCondensed().or(alloc).keys();
 
@@ -51,7 +70,7 @@ using tink.CoreApi;
       case None: null;
       case Some(v): v;
     }
-
+  
   @:to @:extern inline function getCondensed() {
     return switch this.first() {
       case None: None;
