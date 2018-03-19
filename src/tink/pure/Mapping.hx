@@ -52,9 +52,16 @@ using tink.CoreApi;
   @:extern inline function alloc():Map<K, V> return new Map();
 
   //Everything beyond this point is for the brave
+  
+  /**
+   *  Returns an Iterator over the values of `this` Mapping.
+   */
   @:extern inline public function iterator()
     return getCondensed().or(alloc).iterator();
 
+  /**
+   *  Returns an Iterator over the keys of `this` Mapping.
+   */
   @:extern inline public function keys()
     return getCondensed().or(alloc).keys();
 
