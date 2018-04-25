@@ -14,8 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Allow passing predicate to list.first",
-	"version": "0.3.2",
+	"releasenote": "Various Additions",
+	"version": "0.3.3",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {
 		"tink_slice": "",
