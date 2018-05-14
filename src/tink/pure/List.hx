@@ -30,13 +30,24 @@ abstract List<T>(Node<T>) from Node<T> {
   }
   
   public function last(?predicate:T->Bool):haxe.ds.Option<T> {
-    var found = false;
-    var ret = null;
-    for (x in iterator()) if (predicate == null || predicate(x)) {
-      found = true;
-      ret = x;
+    return if(this == null) {
+      None;
+    } else if(predicate == null) {
+      function _last(v:Node<T>):haxe.ds.Option<T>
+        return switch v.tails {
+          case []: Some(v.value);
+          case tails: _last(tails[tails.length -1]);
+        }
+      _last(node());
+    } else {
+      var found = false;
+      var ret = null;
+      for (x in iterator()) if (predicate(x)) {
+        found = true;
+        ret = x;
+      }
+      found ? Some(ret) : None;
     }
-    return found ? Some(ret) : None;
   }
 
   public function new() 
