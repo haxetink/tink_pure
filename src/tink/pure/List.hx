@@ -124,6 +124,15 @@ abstract List<T>(Node<T>) from Node<T> {
       
   public function map<A>(f:T->A):List<A>
     return fromArray([for(i in iterator()) f(i)]);
+    
+  public function select<A>(f:T->haxe.ds.Option<A>):List<A> {
+    var arr = [];
+    for(i in iterator()) switch f(i) {
+      case Some(v): arr.push(v);
+      case None: // skip
+    }
+    return fromArray(arr);
+  }
       
   static public inline function single<A>(v:A):List<A>
     return new Node(1, v);
