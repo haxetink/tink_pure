@@ -10,7 +10,13 @@ class MappingTest {
   public function json() {
     var map:Mapping<Int, String> = [1 => 'a', 2 => 'b'];
     
-    asserts.assert(tink.Json.stringify(map) == '[{"condensed":[[1,"a"],[2,"b"]],"isset":false,"key":null,"value":null}]');
+    var s:String = tink.Json.stringify(map);
+    asserts.assert(s == '[{"condensed":[[1,"a"],[2,"b"]],"isset":false,"key":null,"value":null}]');
+    
+    map = tink.Json.parse(s);
+    asserts.assert([for(key in map.keys()) key].length == 2);
+    asserts.assert(map.get(1) == 'a');
+    asserts.assert(map.get(2) == 'b');
     
     return asserts.done();
   }

@@ -3,7 +3,7 @@ package tink.pure;
 using tink.CoreApi;
 
 private typedef MapEntry<K, V> = {
-  var key(default, never):K;
+  var key(default, never):Null<K>;
   var isset(default, never):Bool;
   var value(default, never):Null<V>;
   var condensed:Null<Map<K, V>>;
