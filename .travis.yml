@@ -1,30 +1,32 @@
 sudo: required
 dist: trusty
 
-language: haxe
-
-os:
-  - linux
-  
-haxe:
-  - "3.4.0"
-  
-matrix:
-  allow_failures:
-    - haxe: development
-    
-install:
-  - haxelib install travix
-  - haxelib run travix install
-
-script:
-  - haxelib run travix interp
-  - haxelib run travix neko
-  - haxelib run travix node
-  - haxelib run travix python
-
 env:
   - secure: "TsuFBdNdg62kP7IWadpxOPINIu7Y6AcKO2kdNFwoM//Zgtdoccany0uYtEfRBkviSZ0ZbZQd+jzF/IddyvW07xxUfsj1LdBCR2yYb5673+kY9bR1U+Ju1hoa8B955YVgz7mb0S9HUD+6U0F5AhAdxUWH8+L4VeBgngoJyzT2ykw="
 
-after_success:
-- haxelib run travix release
+jobs:
+  include:
+    - stage: test
+      language: node_js
+      node_js: 8
+      os:
+        - linux
+        # - osx
+      install:
+        - npm i -g lix
+        - lix download
+      script:
+        - lix run travix interp
+        - lix run travix neko
+        - lix run travix node
+        - lix run travix python
+    
+    - stage: deploy
+      language: haxe
+      haxe: "3.4.7"
+      os: linux
+      script: skip
+      after_success:
+        - haxelib install travix
+        - haxelib run travix install
+        - haxelib run travix release
