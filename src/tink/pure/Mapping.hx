@@ -2,11 +2,11 @@ package tink.pure;
 
 using tink.CoreApi;
 
-@:structInit private class MapEntry<K, V> {
-  public var key(default, never):K;
-  public var isset(default, never):Bool;
-  public var value(default, never):V;
-  public var condensed:Map<K, V>;
+private typedef MapEntry<K, V> = {
+  var key(default, never):K;
+  var isset(default, never):Bool;
+  var value(default, never):Null<V>;
+  var condensed:Null<Map<K, V>>;
 }
 
 @:pure abstract Mapping<K, V>(List<MapEntry<K, V>>) from List<MapEntry<K, V>> to List<MapEntry<K, V>> {
@@ -116,16 +116,15 @@ using tink.CoreApi;
 
   @:op(a + b) @:extern inline static function lAddMutable<K, V>(other:Map<K, V>, m:Mapping<K, V>):Mapping<K, V> 
     return merge([other, m]);
-    
+  
   #if tink_json
   
-  // TODO: seems that @:multiType is preventing the below to work
-  
-  // @:to function toRepresentation():tink.json.Representation<Map<K, V>> 
-  //   return new tink.json.Representation(toMutable());
+  @:to inline function toRepresentation():tink.json.Representation<Array<MapEntry<K, V>>>
+    // TODO: maybe condense first?
+    return @:privateAccess this.toRepresentation();
     
-  // @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>)
-  //   return Mapping.ofMutable(rep.get());
+  @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Array<MapEntry<K, V>>>):Mapping<K, V>
+    return @:privateAccess List.ofRepresentation(rep);
     
   #end
 
