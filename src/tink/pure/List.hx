@@ -156,7 +156,7 @@ abstract List<T>(Node<T>) from Node<T> {
   @:to function toRepresentation():tink.json.Representation<Array<T>> 
     return new tink.json.Representation(toArray());
     
-  @:from static function ofRepresentation<T>(rep:tink.json.Representation<Array<T>>)
+  @:from static function ofRepresentation<T>(rep:tink.json.Representation<Array<T>>):List<T>
     return List.fromArray(rep.get());
     
   #end
