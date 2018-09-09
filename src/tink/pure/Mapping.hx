@@ -119,13 +119,18 @@ private typedef MapEntry<K, V> = {
   
   #if tink_json
   
-  @:to inline function toRepresentation():tink.json.Representation<Array<MapEntry<K, V>>>
-    // TODO: maybe condense first?
-    return @:privateAccess this.toRepresentation();
+  @:extern @:to inline function toRepresentation():tink.json.Representation<Map<K, V>>
+    return new tink.json.Representation(toMutable());
     
-  @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Array<MapEntry<K, V>>>):Mapping<K, V>
-    return @:privateAccess List.ofRepresentation(rep);
-    
+  @:extern @:from inline static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>):Mapping<K, V> {
+    var v = rep.get();
+    // The following is actually a copy of `ofMutable`, using `ofMutable` directly will cause a invalid reference because the function is actually not generated
+    var ret = new List<MapEntry<K, V>>();
+    return
+      if (v.iterator().hasNext()) 
+        ret.prepend({ key: null, isset: false, value: null, condensed: merge([v]) });
+      else ret;
+  }
   #end
 
 }
