@@ -30,13 +30,24 @@ abstract List<T>(Node<T>) from Node<T> {
   }
   
   public function last(?predicate:T->Bool):haxe.ds.Option<T> {
-    var found = false;
-    var ret = null;
-    for (x in iterator()) if (predicate == null || predicate(x)) {
-      found = true;
-      ret = x;
+    return if(this == null) {
+      None;
+    } else if(predicate == null) {
+      function _last(v:Node<T>):haxe.ds.Option<T>
+        return switch v.tails {
+          case []: Some(v.value);
+          case tails: _last(tails[tails.length -1]);
+        }
+      _last(node());
+    } else {
+      var found = false;
+      var ret = null;
+      for (x in iterator()) if (predicate(x)) {
+        found = true;
+        ret = x;
+      }
+      found ? Some(ret) : None;
     }
-    return found ? Some(ret) : None;
   }
   
   public function get(index:Int):haxe.ds.Option<T> {
@@ -124,6 +135,15 @@ abstract List<T>(Node<T>) from Node<T> {
       
   public function map<A>(f:T->A):List<A>
     return fromArray([for(i in iterator()) f(i)]);
+    
+  public function select<A>(f:T->haxe.ds.Option<A>):List<A> {
+    var arr = [];
+    for(i in iterator()) switch f(i) {
+      case Some(v): arr.push(v);
+      case None: // skip
+    }
+    return fromArray(arr);
+  }
       
   static public inline function single<A>(v:A):List<A>
     return new Node(1, v);
@@ -147,7 +167,7 @@ abstract List<T>(Node<T>) from Node<T> {
   @:to function toRepresentation():tink.json.Representation<Array<T>> 
     return new tink.json.Representation(toArray());
     
-  @:from static function ofRepresentation<T>(rep:tink.json.Representation<Array<T>>)
+  @:from static function ofRepresentation<T>(rep:tink.json.Representation<Array<T>>):List<T>
     return List.fromArray(rep.get());
     
   #end

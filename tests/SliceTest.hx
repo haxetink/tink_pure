@@ -4,7 +4,7 @@ import tink.pure.Slice;
 class SliceTest {
   public function new() {}
   public function basic() {
-    var a = [for (i in 0...100) i];
+    var a = [for (i in 0...20) i];
     var s:Slice<Int> = a;
     var rev = s.reverse();
     asserts.assert(s.length == a.length);

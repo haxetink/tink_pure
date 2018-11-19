@@ -2,11 +2,11 @@ package tink.pure;
 
 using tink.CoreApi;
 
-@:structInit private class MapEntry<K, V> {
-  public var key(default, never):K;
-  public var isset(default, never):Bool;
-  public var value(default, never):V;
-  public var condensed:Map<K, V>;
+private typedef MapEntry<K, V> = {
+  var key(default, never):Null<K>;
+  var isset(default, never):Bool;
+  var value(default, never):Null<V>;
+  var condensed:Null<Map<K, V>>;
 }
 
 @:pure abstract Mapping<K, V>(List<MapEntry<K, V>>) from List<MapEntry<K, V>> to List<MapEntry<K, V>> {
@@ -116,17 +116,21 @@ using tink.CoreApi;
 
   @:op(a + b) @:extern inline static function lAddMutable<K, V>(other:Map<K, V>, m:Mapping<K, V>):Mapping<K, V> 
     return merge([other, m]);
-    
+  
   #if tink_json
   
-  // TODO: seems that @:multiType is preventing the below to work
-  
-  // @:to function toRepresentation():tink.json.Representation<Map<K, V>> 
-  //   return new tink.json.Representation(toMutable());
+  @:extern @:to inline function toRepresentation():tink.json.Representation<Map<K, V>>
+    return new tink.json.Representation(toMutable());
     
-  // @:from static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>)
-  //   return Mapping.ofMutable(rep.get());
-    
+  @:extern @:from inline static function ofRepresentation<K, V>(rep:tink.json.Representation<Map<K, V>>):Mapping<K, V> {
+    var v = rep.get();
+    // The following is actually a copy of `ofMutable`, using `ofMutable` directly will cause a invalid reference because the function is actually not generated
+    var ret = new List<MapEntry<K, V>>();
+    return
+      if (v.iterator().hasNext()) 
+        ret.prepend({ key: null, isset: false, value: null, condensed: merge([v]) });
+      else ret;
+  }
   #end
 
 }
