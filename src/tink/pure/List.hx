@@ -49,6 +49,17 @@ abstract List<T>(Node<T>) from Node<T> {
       found ? Some(ret) : None;
     }
   }
+  
+  public function get(index:Int):haxe.ds.Option<T> {
+    if(index < 0) return None;
+    var iter = iterator();
+    var v = null;
+    while(index-- >= 0) {
+      if(!iter.hasNext()) return None;
+      v = iter.next();
+    }
+    return Some(v);
+  }
 
   public function new() 
     this = null;

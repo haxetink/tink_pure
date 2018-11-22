@@ -43,6 +43,15 @@ class ListTest {
     return asserts.done();
   }
   
+  public function get() {
+    var list = List.fromArray([1,2]);
+    asserts.assert(list.get(-1).match(None));
+    asserts.assert(list.get(0).match(Some(1)));
+    asserts.assert(list.get(1).match(Some(2)));
+    asserts.assert(list.get(3).match(None));
+    return asserts.done();
+  }
+  
   public function sort() {
     var list = List.fromArray([3,4,1,2]);
     var sorted = list.sort(Reflect.compare);
