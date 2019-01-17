@@ -100,8 +100,8 @@ abstract List<T>(Node<T>) from Node<T> {
       else
         new Node(this.length + 1, value, [this]);
         
-  public function replace(value:T, by:T):List<T>
-    return fromArray([for(v in iterator()) if(v == value) by else v]);
+  public function replace(select:ReplaceSelector<T>, generate:ReplaceGenerator<T>):List<T>
+    return fromArray([for(v in iterator()) if(select(v)) generate(v) else v]);
   
   public inline function exists(predicate:T->Bool) {
     var ret = false;
@@ -222,4 +222,18 @@ class NodeIterator<T> {
             list.push(next.tails[ -i - 1]);
           next.value;
       }
+}
+
+@:callable
+private abstract ReplaceSelector<T>(T->Bool) from T->Bool to T->Bool {
+  @:from
+  public static function const<T>(v:T):ReplaceSelector<T>
+    return function(i) return i == v;
+}
+
+@:callable
+private abstract ReplaceGenerator<T>(T->T) from T->T to T->T {
+  @:from
+  public static function const<T>(v:T):ReplaceGenerator<T>
+    return function(_) return v;
 }
