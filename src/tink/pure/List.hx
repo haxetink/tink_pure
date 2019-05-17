@@ -123,7 +123,7 @@ abstract List<T>(Node<T>) from Node<T> {
   public inline function iterator():NodeIterator<T>
     return new NodeIterator(this);
 
-  @:to function toIterable():Iterable<T>
+  @:to public inline function toIterable():Iterable<T>
     return {
       iterator: iterator,
     }
