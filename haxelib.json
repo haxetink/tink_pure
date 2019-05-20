@@ -14,8 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Changed List.replace signature",
-	"version": "0.5.0",
+	"releasenote": "Added List.fold",
+	"version": "0.5.1",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {
 		"tink_slice": "",
