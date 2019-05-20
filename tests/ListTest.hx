@@ -5,7 +5,7 @@ import tink.unit.Assert.assert;
 @:asserts
 class ListTest {
   public function new() {}
-	
+
   public function prepend() {
     var list = List.fromArray([1,2]);
     list = list.prepend(0);
@@ -13,7 +13,7 @@ class ListTest {
     for(item in list) asserts.assert(item == i++);
     return asserts.done();
   }
-  
+
   public function append() {
     var list = List.fromArray([0,1]);
     list = list.append(2);
@@ -21,12 +21,12 @@ class ListTest {
     for(item in list) asserts.assert(item == i++);
     return asserts.done();
   }
-  
+
   public function single() {
     var list = List.single(1);
     return assert(list.length == 1);
   }
-  
+
   public function first() {
     var list = List.fromArray([1,2,3,4]);
     asserts.assert(list.first().match(Some(1)));
@@ -34,7 +34,7 @@ class ListTest {
     asserts.assert(list.first(function(v) return v > 5).match(None));
     return asserts.done();
   }
-  
+
   public function last() {
     var list = List.fromArray([1,2,3,4]);
     asserts.assert(list.last().match(Some(4)));
@@ -42,7 +42,7 @@ class ListTest {
     asserts.assert(list.last(function(v) return v > 5).match(None));
     return asserts.done();
   }
-  
+
   public function get() {
     var list = List.fromArray([1,2]);
     asserts.assert(list.get(-1).match(None));
@@ -51,7 +51,7 @@ class ListTest {
     asserts.assert(list.get(3).match(None));
     return asserts.done();
   }
-  
+
   public function sort() {
     var list = List.fromArray([3,4,1,2]);
     var sorted = list.sort(Reflect.compare);
@@ -59,13 +59,19 @@ class ListTest {
     asserts.assert(sorted.last().match(Some(4)));
     return asserts.done();
   }
-  
+
   public function replace() {
     var list = List.fromArray([1,2,1,3,1,4]);
     list = list.replace(1, 5);
     return assert(list.toArray().join(',') == '5,2,5,3,5,4');
   }
-  
+
+  public function fold() {
+    var list = List.fromArray([1,2,3,4,5]);
+    var sum = list.fold(function(a,total) return a + total, 42);
+    return assert(sum == 42 + 1 + 2 + 3 + 4 + 5);
+  }
+
   #if tink_json
   public function json() {
     var list = List.fromArray([1,2,3,4]);
