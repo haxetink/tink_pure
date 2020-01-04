@@ -40,7 +40,7 @@ private typedef MapEntry<K, V> = {
   /**
     Clone this `Mapping` but without the specified key
   **/
-  public function without(key:K) 
+  public function without(key:K):Mapping<K, V>
     return this.prepend({ key: key, isset: false, value: null, condensed: null });
   
   /**
