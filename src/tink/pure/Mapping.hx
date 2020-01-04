@@ -58,6 +58,14 @@ private typedef MapEntry<K, V> = {
    */
   @:extern inline public function iterator()
     return getCondensed().or(alloc).iterator();
+   
+   #if haxe4
+   /**
+    *  Returns an KeyValueIterator over the values of `this` Mapping.
+    */
+  @:extern inline public function keyValueIterator()
+    return getCondensed().or(alloc).keyValueIterator();
+  #end
 
   /**
    *  Returns an Iterator over the keys of `this` Mapping.
