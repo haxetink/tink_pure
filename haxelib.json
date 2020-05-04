@@ -14,8 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Added List.fold",
-	"version": "0.5.1",
+	"releasenote": "Added keyValueIterator to Mapping",
+	"version": "0.5.2",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {
 		"tink_slice": "",
