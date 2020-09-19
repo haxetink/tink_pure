@@ -4,15 +4,17 @@ import tink.Slice as MSlice;
 
 @:forward(length, iterator)
 @:pure
+@:jsonParse(a -> tink.pure.Slice.ofArray(a))
+@:jsonStringify(slice -> [for (x in slice) x])
 abstract Slice<T>(MSlice<T>) to MSlice<T> {
 
-  inline function new(v:MSlice<T>) 
+  inline function new(v:MSlice<T>)
     this = v;
 
-  public inline function skip(count):Slice<T> 
+  public inline function skip(count):Slice<T>
     return new Slice(this.skip(count));
 
-  public inline function limit(count):Slice<T>     
+  public inline function limit(count):Slice<T>
     return new Slice(this.limit(count));
 
   public inline function reverse():Slice<T>
