@@ -18,6 +18,8 @@ package tink.pure;
       else Exclude;
 }
 
+@:jsonParse(tink.pure.List.fromArray)
+@:jsonStringify(l -> l.toArray())
 abstract List<T>(Node<T>) from Node<T> {
   public var length(get, never):Int;
     inline function get_length()
@@ -167,17 +169,6 @@ abstract List<T>(Node<T>) from Node<T> {
 
     return ret;
   }
-
-  #if tink_json
-
-  @:to function toRepresentation():tink.json.Representation<Array<T>>
-    return new tink.json.Representation(toArray());
-
-  @:from static function ofRepresentation<T>(rep:tink.json.Representation<Array<T>>):List<T>
-    return List.fromArray(rep.get());
-
-  #end
-
 }
 
 @:generic private class Node<T> {
