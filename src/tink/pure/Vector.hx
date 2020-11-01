@@ -47,7 +47,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
   static public inline function fromIterable<T>(v:Iterable<T>)
     return new Vector([for (x in v) x]);
 
-  public inline function toArray()
+  @:to public inline function toArray()
     return this.copy();
 
   @:from macro static function ofAny(e) {
