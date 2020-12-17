@@ -27,6 +27,12 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
   public inline function filter(f:T->Bool)
     return new Vector(this.filter(f));
 
+  public inline function sorted(compare:(T, T)->Int) {
+    var a = this.copy();
+    a.sort(compare);
+    return new Vector(a);
+  }
+
   @:op(a & b)
   public inline function concat(that:Vectorlike<T>)
     return new Vector(this.concat(cast that));
@@ -35,17 +41,20 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
   static inline function lconcat<T>(a:Vectorlike<T>, b:Vector<T>)
     return new Vector(a.concat(b.unwrap()));
 
-  #if macro @:from #end
-  static public inline function fromArray<T>(a:Array<T>)
-    return new Vector(a.copy());
+  @:from static function fromVector<T, R:T>(v:Vector<R>):Vector<T>
+    return cast v;
 
   #if macro @:from #end
-  static public inline function fromMutable<T>(v:haxe.ds.Vector<T>)
-    return new Vector(v.toArray());
+  static public inline function fromArray<T, R:T>(a:Array<R>)
+    return new Vector<T>(cast a.copy());
 
   #if macro @:from #end
-  static public inline function fromIterable<T>(v:Iterable<T>)
-    return new Vector([for (x in v) x]);
+  static public inline function fromMutable<T, R:T>(v:haxe.ds.Vector<R>)
+    return new Vector<T>(cast v.toArray());
+
+  #if macro @:from #end
+  static public inline function fromIterable<T, R:T>(v:Iterable<R>)
+    return new Vector<T>([for (x in v) x]);
 
   @:to public inline function toArray()
     return this.copy();
