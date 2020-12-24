@@ -5,7 +5,7 @@ package tink.pure;
   using haxe.macro.Tools;
 #end
 
-@:forward(length, indexOf, contains, iterator, keyValueIterator)
+@:forward(length, indexOf, contains, iterator, keyValueIterator, join)
 @:pure
 @:jsonParse(a -> @:privateAccess new tink.pure.Vector(a))
 @:jsonStringify(vec -> @:privateAccess vec.unwrap())
