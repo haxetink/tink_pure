@@ -31,4 +31,10 @@ class VectorTest {
     asserts.assert(b[3] == 4);
     return asserts.done();
   }
+
+  public function fold() {
+    var a:Vector<Int> = [1, 2, 3, 4];
+    asserts.assert(a.fold((v, sum) -> sum + v, 0) == 10);
+    return asserts.done();
+  }
 }
