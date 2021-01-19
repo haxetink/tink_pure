@@ -20,4 +20,15 @@ class VectorTest {
     var v:Vector<Float> = a;
     return asserts.done();
   }
+
+  public function with() {
+    var a:Vector<Int> = [1, 2, 3, 4];
+    final b = a.with(0, 5);
+    asserts.assert(b.length == 4);
+    asserts.assert(b[0] == 5);
+    asserts.assert(b[1] == 2);
+    asserts.assert(b[2] == 3);
+    asserts.assert(b[3] == 4);
+    return asserts.done();
+  }
 }

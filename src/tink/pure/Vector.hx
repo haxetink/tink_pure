@@ -32,6 +32,12 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
     a.sort(compare);
     return new Vector(a);
   }
+  
+  public inline function with(index:Int, value:T):Vector<T> {
+    final arr = this.copy();
+    arr[index] = value;
+    return new Vector(arr);
+  }
 
   @:op(a & b)
   public inline function concat(that:Vectorlike<T>)
