@@ -33,9 +33,11 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
     return new Vector(a);
   }
   
-  public inline function fold(f, init) {
+  public inline function slice(pos, end)
+    return new Vector(this.slice(pos, end));
+  
+  public inline function fold(f, init)
     return Lambda.fold(this, f, init);
-  }
   
   public inline function with(index:Int, value:T):Vector<T> {
     final arr = this.copy();
