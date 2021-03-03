@@ -83,6 +83,12 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
     return switch t.expr {
       case TArrayDecl(_):
         macro @:pos(e.pos) @:privateAccess new tink.pure.Vector(${e});
+      case TBlock([ // this is how the compiler transforms array comprehension syntax into typed exprs
+          {expr: TVar({id: initId, name: name}, {expr: TArrayDecl([])})},
+          {expr: TBlock(exprs)},
+          {expr: TLocal({id: retId})},
+      ]) if(initId == retId && name.indexOf('`') != -1):
+        macro @:pos(e.pos) @:privateAccess new tink.pure.Vector(${e});
       default:
         switch follow(t.t) {
           case TInst(_.get() => { pack: [], name: 'Array' }, _):
