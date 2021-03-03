@@ -87,7 +87,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
           {expr: TVar({id: initId, name: name}, {expr: TArrayDecl([])})},
           {expr: TBlock(exprs)},
           {expr: TLocal({id: retId})},
-      ]) if(initId == retId && name.indexOf('`') != -1):
+      ]) if(initId == retId && name.charCodeAt(0) == '`'.code):
         macro @:pos(e.pos) @:privateAccess new tink.pure.Vector(${e});
       default:
         switch follow(t.t) {
