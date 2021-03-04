@@ -58,6 +58,10 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
   @:op(a & b)
   static inline function lconcat<T>(a:Vectorlike<T>, b:Vector<T>)
     return new Vector(a.concat(b.unwrap()));
+  
+  static public inline function empty<T>():Vector<T> {
+    return new Vector<T>([]);
+  }
 
   @:from static function fromVector<T, R:T>(v:Vector<R>):Vector<T>
     return cast v;
