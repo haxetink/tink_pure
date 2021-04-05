@@ -1,4 +1,5 @@
 tests.hxml
 -lib tink_pure
 -lib travix
+-D no-deprecation-warnings
 --interp

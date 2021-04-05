@@ -31,6 +31,7 @@ class RunTests {
       new MappingTest(),
       new SliceTest(),
       new VectorTest(),
+      new DictTest(),
     ])).handle(function(result) {
       exit(result.summary().failures.length);
     });
