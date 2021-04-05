@@ -2,6 +2,8 @@ package tink.pure;
 
 import haxe.Rest;
 
+@:jsonParse(tink.pure.Dict.ofMap)
+@:jsonStringify(map -> @:privateAccess tink.pure.Dict.toJson(map))
 @:forward(exists, keys, iterator, keyValueIterator, copy)
 abstract Dict<K, V>(Map<K, V>) {
 
@@ -20,6 +22,9 @@ abstract Dict<K, V>(Map<K, V>) {
     return new Dict(ret);
   }
 
+  static function toJson<K, V>(d:Dict<K, V>):Map<K, V> 
+    return cast d;
+  
   overload extern public inline function with<Values:KeyValueIterable<K, V>>(values:Values):Dict<K, V> {
     var ret = this.copy();
 

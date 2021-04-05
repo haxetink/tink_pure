@@ -6,7 +6,7 @@ import tink.pure.Dict;
 @:asserts
 class DictTest {
   public function new() {}
-  @:include public function test() {
+  public function basics() {
     var d:Dict<Int, String> = [for (i in 0...5) i => 'v$i'];
     function expect(s, d:Dict<Int, String>, ?pos) {
       var list = [for (k => v in d) '$k => $v'];
@@ -20,4 +20,15 @@ class DictTest {
     expect('3 => v3, 4 => v4', d.filter(entry -> entry.key > 2));
     return asserts.done();
   }
+
+  #if tink_json
+  public function json() {
+    var d:Dict<Int, String> = [for (i in 0...5) i => 'v$i'];
+    var d2 = d;
+    d2 = tink.Json.parse(tink.Json.stringify(d));
+    for (k => v in d)
+      asserts.assert(v == d2[k]);
+    return asserts.done();
+  }
+  #end
 }
