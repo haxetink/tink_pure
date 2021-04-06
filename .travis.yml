@@ -22,13 +22,13 @@ install:
   - lix download
 
 script:
-  - lix run travix interp
-  - lix run travix neko
-  - lix run travix node
-  - lix run travix python
-  - lix run travix cpp
-  - lix run travix cs
-  - lix run travix php
+  - lix travix interp
+  - lix travix neko
+  - lix travix node
+  - lix travix python
+  - lix travix cpp
+  - lix travix java -D jvm
+  - lix travix php
 
 jobs:
   include:
