@@ -42,7 +42,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
   public inline function find(f)
     return Lambda.find(this, f);
   
-  public inline function fold(f, init)
+  public inline function fold<R>(f:(v:T, result:R)->R, init:R)
     return Lambda.fold(this, f, init);
   
   public inline function with(index:Int, value:T):Vector<T> {
