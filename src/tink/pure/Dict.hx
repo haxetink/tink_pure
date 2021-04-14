@@ -55,4 +55,15 @@ abstract Dict<K, V>(Map<K, V>) {
 
   @:to public inline function toString():String
     return this.toString();
+  
+  @:from macro static function ofAny(e) {
+    var t = haxe.macro.Context.typeExpr(e);
+    e = haxe.macro.Context.storeTypedExpr(t);
+    return switch t.expr {
+      case TArrayDecl([]):
+        macro @:pos(e.pos) @:privateAccess new tink.pure.Dict([]);
+      case _:
+        macro @:pos(e.pos) tink.pure.Dict.ofMap($e);
+    }
+  }
 }

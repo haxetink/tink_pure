@@ -20,6 +20,15 @@ class DictTest {
     expect('3 => v3, 4 => v4', d.filter(entry -> entry.key > 2));
     return asserts.done();
   }
+  
+  public function literal() {
+    var d1:Dict<Int, String> = [];
+    asserts.assert(Lambda.count({iterator: d1.iterator}) == 0);
+    var d2 = d1.with(1, 'foo');
+    asserts.assert(Lambda.count({iterator: d1.iterator}) == 0);
+    asserts.assert(Lambda.count({iterator: d2.iterator}) == 1);
+    return asserts.done();
+  }
 
   #if tink_json
   public function json() {
