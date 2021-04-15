@@ -20,6 +20,7 @@ class VectorTest {
     var v:Vector<Float> = a;
     
     var v:Vector<{final foo:Int;}> = [{foo: 1}];
+    var v:Vector<{final foo:Int;}> = [for(i in 0...10) {foo: i}];
     // asserts.expectCompilerError((v:Vector<{var foo:Int;}>)); // FIXME: https://github.com/HaxeFoundation/haxe/issues/10198
     
     return asserts.done();
