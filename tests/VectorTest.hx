@@ -18,6 +18,10 @@ class VectorTest {
     var a = [1, 2, 3, 4];
     var v:Vector<Float> = (a:Vector<Int>);
     var v:Vector<Float> = a;
+    
+    var v:Vector<{final foo:Int;}> = [{foo: 1}];
+    // asserts.expectCompilerError((v:Vector<{var foo:Int;}>)); // FIXME: https://github.com/HaxeFoundation/haxe/issues/10198
+    
     return asserts.done();
   }
 

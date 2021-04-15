@@ -3,6 +3,7 @@ package tink.pure;
 #if macro
   import haxe.macro.Context.*;
   using haxe.macro.Tools;
+  using tink.MacroApi;
 #end
 
 @:forward(length, indexOf, contains, iterator, keyValueIterator, join)
@@ -82,26 +83,41 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
     return this.copy();
 
   @:from macro static function ofAny(e) {
-    var t = typeExpr(e);
-    e = storeTypedExpr(t);
-    return switch t.expr {
-      case TArrayDecl(_):
-        macro @:pos(e.pos) @:privateAccess new tink.pure.Vector(${e});
-      case TBlock([ // this is how the compiler transforms array comprehension syntax into typed exprs
-          {expr: TVar({id: initId, name: name}, {expr: TArrayDecl([])})},
-          {expr: TBlock(exprs)},
-          {expr: TLocal({id: retId})},
-      ]) if(initId == retId && name.charCodeAt(0) == '`'.code):
-        macro @:pos(e.pos) @:privateAccess new tink.pure.Vector(${e});
-      default:
-        switch follow(t.t) {
-          case TInst(_.get() => { pack: [], name: 'Array' }, _):
-            macro @:pos(e.pos) tink.pure.Vector.fromArray(${e});
-          case TAbstract(_.get() => { pack: ['haxe', 'ds'], name: 'Vector' }, _):
-            macro @:pos(e.pos) tink.pure.Vector.fromMutable(${e});
-          default:
-            macro @:pos(e.pos) tink.pure.Vector.fromIterable(${e});
-        }
+    return try {
+      var expected = switch getExpectedType() {
+        case TAbstract(_, [t]): t.toComplex();
+        case _: throw 'unreachable';
+      }
+      var t = typeExpr(macro ($e:Array<$expected>));
+      switch t.expr {
+        case TParenthesis({expr: TCast({expr: TArrayDecl(_)}, _)}):
+          var stored = storeTypedExpr(t);
+          macro @:pos(e.pos) @:privateAccess new tink.pure.Vector($stored);
+        case _:
+          throw 'unreachable';
+      }
+    } catch(_) {
+      var t = typeExpr(e);
+      var stored = storeTypedExpr(t);
+      switch t.expr {
+        case TArrayDecl(_):
+          macro @:pos(e.pos) @:privateAccess new tink.pure.Vector($e);
+        case TBlock([ // this is how the compiler transforms array comprehension syntax into typed exprs
+            {expr: TVar({id: initId, name: name}, {expr: TArrayDecl([])})},
+            {expr: TBlock(exprs)},
+            {expr: TLocal({id: retId})},
+        ]) if(initId == retId && name.charCodeAt(0) == '`'.code):
+          macro @:pos(e.pos) @:privateAccess new tink.pure.Vector(${stored});
+        default:
+          switch follow(t.t) {
+            case TInst(_.get() => { pack: [], name: 'Array' }, _):
+              macro @:pos(e.pos) tink.pure.Vector.fromArray($stored);
+            case TAbstract(_.get() => { pack: ['haxe', 'ds'], name: 'Vector' }, _):
+              macro @:pos(e.pos) tink.pure.Vector.fromMutable($stored);
+            default:
+              macro @:pos(e.pos) tink.pure.Vector.fromIterable($stored);
+          }
+      }
     }
   }
 }
