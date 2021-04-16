@@ -7,6 +7,13 @@ import tink.pure.Dict;
 class DictTest {
   public function new() {}
   public function basics() {
+    var m:Map<Int, String> = [];
+    
+    var d:Dict<Int, String> = m;
+    var d:Dict<Int, String> = [];
+    var d:Dict<Int, String> = new Map();
+    var d:Dict<Int, String> = [1 => 'foo'];
+    
     var d:Dict<Int, String> = [for (i in 0...5) i => 'v$i'];
     function expect(s, d:Dict<Int, String>, ?pos) {
       var list = [for (k => v in d) '$k => $v'];
@@ -23,10 +30,8 @@ class DictTest {
   
   public function literal() {
     var d1:Dict<Int, String> = [];
-    asserts.assert(Lambda.count({iterator: d1.iterator}) == 0);
     var d2 = d1.with(1, 'foo');
-    asserts.assert(Lambda.count({iterator: d1.iterator}) == 0);
-    asserts.assert(Lambda.count({iterator: d2.iterator}) == 1);
+    asserts.assert(d1 != d2);
     return asserts.done();
   }
 

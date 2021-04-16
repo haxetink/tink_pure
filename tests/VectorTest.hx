@@ -3,6 +3,16 @@ import tink.pure.Vector;
 @:asserts
 class VectorTest {
   public function new() {}
+  
+  public function init() {
+    var v1:Vector<Int> = [];
+    var v2:Vector<Int> = [1,2,3];
+    var v3:Vector<Int> = [for(i in 0...3) i];
+    var v4:Vector<Int> = new Array();
+    // trace(v1, v2, v3, v4);
+    return asserts.done();
+  }
+  
   public function basic() {
     var a = [1, 2, 3, 4];
     var v = Vector.fromArray(a);

@@ -102,7 +102,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
     }
     
     return switch typed.expr {
-      case TArrayDecl(_):
+      case TArrayDecl(_) | TNew(_.get() => {pack: [], name: 'Array'}, [_], []):
         macro @:pos(e.pos) @:privateAccess new tink.pure.Vector($stored);
       case TBlock([ // this is how the compiler transforms array comprehension syntax into typed exprs
           {expr: TVar({id: initId, name: name}, {expr: TArrayDecl([])})},
