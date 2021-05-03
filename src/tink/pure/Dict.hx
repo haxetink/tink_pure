@@ -15,6 +15,12 @@ abstract Dict<K, V>(Map<K, V>) {
   inline function new(data)
     this = data;
   
+  extern public inline function count(?f:V->Bool)
+    return Lambda.count((cast this:haxe.Constraints.IMap<K, V>), f);
+  
+  extern public inline function exists(f:V->Bool)
+    return Lambda.exists((cast this:haxe.Constraints.IMap<K, V>), f);
+  
   static extern public inline function empty<K, V>():Dict<K, V> {
     return new Dict<K, V>([]);
   }

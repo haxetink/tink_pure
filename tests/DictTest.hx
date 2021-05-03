@@ -34,6 +34,29 @@ class DictTest {
     asserts.assert(d1 != d2);
     return asserts.done();
   }
+  
+  public function count() {
+    var d1:Dict<Int, String> = [];
+    asserts.assert(d1.count() == 0);
+    
+    var d2 = d1.with(1, 'foo');
+    asserts.assert(d2.count() == 1);
+    asserts.assert(d2.count(v -> v == 'foo') == 1);
+    asserts.assert(d2.count(v -> v == 'bar') == 0);
+    
+    return asserts.done();
+  }
+  
+  public function exists() {
+    var d1:Dict<Int, String> = [];
+    asserts.assert(!d1.exists(v -> true));
+    
+    var d2 = d1.with(1, 'foo');
+    asserts.assert(d2.exists(v -> v == 'foo'));
+    asserts.assert(!d2.exists(v -> v == 'bar'));
+    
+    return asserts.done();
+  }
 
   #if tink_json
   public function json() {
