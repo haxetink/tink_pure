@@ -37,6 +37,9 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> {
   public inline function slice(pos, end)
     return new Vector(this.slice(pos, end));
   
+  public inline function count(f)
+    return Lambda.count(this, f);
+  
   public inline function exists(f)
     return Lambda.exists(this, f);
   
