@@ -21,6 +21,9 @@ abstract Dict<K, V>(Map<K, V>) {
   extern public inline function exists(f:V->Bool)
     return Lambda.exists((cast this:haxe.Constraints.IMap<K, V>), f);
   
+  extern public inline function fold<R>(f:(v:V, result:R)->R, init:R)
+    return Lambda.fold((cast this:haxe.Constraints.IMap<K, V>), f, init);
+  
   static extern public inline function empty<K, V>():Dict<K, V> {
     return new Dict<K, V>([]);
   }

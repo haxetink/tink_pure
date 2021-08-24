@@ -57,6 +57,15 @@ class DictTest {
     
     return asserts.done();
   }
+  
+  public function iterators() {
+    var d1:Dict<String, Int> = ['foo' => 1];
+    asserts.assert(d1.fold((v, total) -> v + total, 0) == 1);
+    asserts.assert([for(v in d1) v][0] == 1);
+    asserts.assert([for(k => v in d1) k][0] == 'foo');
+    asserts.assert([for(k => v in d1) v][0] == 1);
+    return asserts.done();
+  }
 
   #if tink_json
   public function json() {
