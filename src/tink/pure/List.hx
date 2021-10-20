@@ -1,5 +1,7 @@
 package tink.pure;
 
+using tink.CoreApi;
+
 @:enum abstract FilterResult(Int) {
   var ExcludeAndStop = -3;
   var Exclude = 0;
@@ -20,6 +22,8 @@ package tink.pure;
 
 @:jsonParse(tink.pure.List.fromArray)
 @:jsonStringify(l -> l.toArray())
+@:using(tink.pure.List.NamedListIterator)
+@:using(tink.pure.List.PairListIterator)
 abstract List<T>(Node<T>) from Node<T> {
   public var length(get, never):Int;
     inline function get_length()
@@ -233,4 +237,36 @@ private abstract ReplaceGenerator<T>(T->T) from T->T to T->T {
   @:from
   public static function const<T>(v:T):ReplaceGenerator<T>
     return function(_) return v;
+}
+
+class NamedListIterator<K, V> {
+  final it:NodeIterator<NamedWith<K, V>>;
+  public function new(it)
+    this.it = it;
+
+  public inline function hasNext()
+    return it.hasNext();
+
+  public inline function next() {
+    var ret = it.next();
+    return { key: ret.name, value: ret.value };
+  }
+  static public function keyValueIterator<K, V>(l:List<NamedWith<K, V>>):KeyValueIterator<K, V>
+    return new NamedListIterator(l.iterator());
+}
+
+class PairListIterator<K, V> {
+  final it:NodeIterator<Pair<K, V>>;
+  public function new(it)
+    this.it = it;
+
+  public inline function hasNext()
+    return it.hasNext();
+
+  public inline function next() {
+    var ret = it.next();
+    return { key: ret.a, value: ret.b };
+  }
+  static public function keyValueIterator<K, V>(l:List<Pair<K, V>>):KeyValueIterator<K, V>
+    return new PairListIterator(l.iterator());
 }
