@@ -173,6 +173,9 @@ abstract List<T>(Node<T>) from Node<T> {
 
     return ret;
   }
+
+  public function toString():String
+      return this == null ? '()' : Std.string(this);
 }
 
 @:generic private class Node<T> {
