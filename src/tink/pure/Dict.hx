@@ -9,21 +9,24 @@ package tink.pure;
 // @:jsonParse(tink.pure.Dict.ofMap)
 @:jsonParse(map -> @:privateAccess new tink.pure.Dict(map))
 @:jsonStringify(map -> @:privateAccess tink.pure.Dict.toJson(map))
-@:forward(exists, keys, iterator, keyValueIterator, copy)
+@:forward(exists, keys, iterator, keyValueIterator)
 abstract Dict<K, V>(Map<K, V>) {
 
   inline function new(data)
     this = data;
-  
+
+  @:to public function copy()
+    return this.copy();
+
   extern public inline function count(?f:V->Bool)
     return Lambda.count((cast this:haxe.Constraints.IMap<K, V>), f);
-  
+
   extern public inline function exists(f:V->Bool)
     return Lambda.exists((cast this:haxe.Constraints.IMap<K, V>), f);
-  
+
   extern public inline function fold<R>(f:(v:V, result:R)->R, init:R)
     return Lambda.fold((cast this:haxe.Constraints.IMap<K, V>), f, init);
-  
+
   static extern public inline function empty<K, V>():Dict<K, V> {
     return new Dict<K, V>([]);
   }
@@ -76,10 +79,10 @@ abstract Dict<K, V>(Map<K, V>) {
 
   @:to public inline function toString():String
     return this.toString();
-  
+
   @:from macro static function ofAny(e) {
     var stored, typed = typeExpr(e);
-    
+
     return switch typed.expr {
       case TArrayDecl([]) | TNew(_.get() => {pack: ['haxe', 'ds', '_Map'], name: 'Map_Impl_'}, [TMono(_), TMono(_)], []):
         macro @:pos(e.pos) @:privateAccess new tink.pure.Dict(new Map());
@@ -93,7 +96,7 @@ abstract Dict<K, V>(Map<K, V>) {
             case v:
               throw 'unreachable';
           }
-          
+
           switch typeExpr(macro ($e:Map<$expectedk, $expectedv>)) {
             case outer = {expr: TParenthesis({expr: TCast(inner, _)})}:
               typed = inner;
@@ -105,7 +108,7 @@ abstract Dict<K, V>(Map<K, V>) {
           typed = typeExpr(e);
           stored = storeTypedExpr(typed);
         }
-        
+
         switch typed.expr {
           case TBlock([ // this is how the compiler transforms array comprehension syntax into typed exprs
               {expr: TVar({id: initId, name: name, t: TAbstract(_.get() => {pack: ['haxe', 'ds'], name: 'Map'}, _)}, {expr: TNew(_)})},
