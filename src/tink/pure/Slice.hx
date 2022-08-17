@@ -6,7 +6,7 @@ import tink.Slice as MSlice;
 @:pure
 @:jsonParse(a -> tink.pure.Slice.ofArray(a))
 @:jsonStringify(slice -> [for (x in slice) x])
-abstract Slice<T>(MSlice<T>) to MSlice<T> {
+abstract Slice<T>(MSlice<T>) to MSlice<T> to Iterable<T> {
 
   inline function new(v:MSlice<T>)
     this = v;
