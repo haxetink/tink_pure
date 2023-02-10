@@ -10,7 +10,7 @@ package tink.pure;
 @:pure
 @:jsonParse(a -> @:privateAccess new tink.pure.Vector(a))
 @:jsonStringify(vec -> @:privateAccess vec.unwrap())
-abstract Vector<T>(Array<T>) to Vectorlike<T> {
+abstract Vector<T>(Array<T>) to Vectorlike<T> to Iterable<T> {
 
   inline function new(a)
     this = a;
