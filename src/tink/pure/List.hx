@@ -2,7 +2,7 @@ package tink.pure;
 
 using tink.CoreApi;
 
-@:enum abstract FilterResult(Int) {
+enum abstract FilterResult(Int) {
   var ExcludeAndStop = -3;
   var Exclude = 0;
   var Include = 1;

@@ -12,9 +12,9 @@ private typedef MapEntry<K, V> = {
 }
 
 @:pure abstract Mapping<K, V>(List<MapEntry<K, V>>) from List<MapEntry<K, V>> to List<MapEntry<K, V>> {
-  
-  @:extern public inline function new(?init:HaxeMap<K, V>) this = init == null ? null : ofMutable(init);
-  
+
+  extern public inline function new(?init:HaxeMap<K, V>) this = init == null ? null : ofMutable(init);
+
   /**
     Returns true if `key` has a mapping, false otherwise.
   **/
@@ -51,37 +51,37 @@ private typedef MapEntry<K, V> = {
   public function with(key:K, value:V):Mapping<K, V> 
     return this.prepend({ key: key, isset: true, value: value, condensed: null });
 
-  @:extern inline function alloc():HaxeMap<K, V> return new HaxeMap();
+  extern inline function alloc():HaxeMap<K, V> return new HaxeMap();
 
   //Everything beyond this point is for the brave
   
   /**
    *  Returns an Iterator over the values of `this` Mapping.
    */
-  @:extern inline public function iterator()
+  extern inline public function iterator()
     return getCondensed().or(alloc).iterator();
    
    #if haxe4
    /**
     *  Returns an KeyValueIterator over the values of `this` Mapping.
     */
-  @:extern inline public function keyValueIterator()
+  extern inline public function keyValueIterator()
     return getCondensed().or(alloc).keyValueIterator();
   #end
 
   /**
    *  Returns an Iterator over the keys of `this` Mapping.
    */
-  @:extern inline public function keys()
+  extern inline public function keys()
     return getCondensed().or(alloc).keys();
 
-  @:to @:extern inline public function condensed():Mapping<K, V>
+  @:to extern inline public function condensed():Mapping<K, V>
     return switch getCondensed() {
       case None: null;
       case Some(v): v;
     }
   
-  @:to @:extern inline function getCondensed() {
+  @:to extern inline function getCondensed() {
     return switch this.first() {
       case None: None;
       case Some({ condensed: c }) if (c != null): Some(c);
@@ -106,13 +106,13 @@ private typedef MapEntry<K, V> = {
     }
   }
 
-  @:to @:extern inline function toMutable():HaxeMap<K, V>
+  @:to extern inline function toMutable():HaxeMap<K, V>
     return getCondensed().map(function (m) return merge([m])).or(alloc);
 
-  @:extern inline static function merge<K, V>(a:Array<HaxeMap<K, V>>) 
+  extern inline static function merge<K, V>(a:Array<HaxeMap<K, V>>)
     return [for (m in a) for (k in m.keys()) k => m[k]];
 
-  @:from @:extern inline static function ofMutable<K, V>(v:HaxeMap<K, V>):Mapping<K, V> {
+  @:from extern inline static function ofMutable<K, V>(v:HaxeMap<K, V>):Mapping<K, V> {
     var ret = new List<MapEntry<K, V>>();
     
     return
@@ -121,18 +121,18 @@ private typedef MapEntry<K, V> = {
       else ret;
   }
 
-  @:op(a + b) @:extern inline static function rAddMutable<K, V>(m:Mapping<K, V>, other:HaxeMap<K, V>):Mapping<K, V> 
+  @:op(a + b) extern inline static function rAddMutable<K, V>(m:Mapping<K, V>, other:HaxeMap<K, V>):Mapping<K, V>
     return merge([m, other]);
 
-  @:op(a + b) @:extern inline static function lAddMutable<K, V>(other:HaxeMap<K, V>, m:Mapping<K, V>):Mapping<K, V> 
+  @:op(a + b) extern inline static function lAddMutable<K, V>(other:HaxeMap<K, V>, m:Mapping<K, V>):Mapping<K, V>
     return merge([other, m]);
   
   #if tink_json
   
-  @:extern @:to inline function toRepresentation():tink.json.Representation<HaxeMap<K, V>>
+  @:to extern inline function toRepresentation():tink.json.Representation<HaxeMap<K, V>>
     return new tink.json.Representation(toMutable());
     
-  @:extern @:from inline static function ofRepresentation<K, V>(rep:tink.json.Representation<HaxeMap<K, V>>):Mapping<K, V> {
+  @:from extern inline static function ofRepresentation<K, V>(rep:tink.json.Representation<HaxeMap<K, V>>):Mapping<K, V> {
     var v = rep.get();
     // The following is actually a copy of `ofMutable`, using `ofMutable` directly will cause a invalid reference because the function is actually not generated
     var ret = new List<MapEntry<K, V>>();

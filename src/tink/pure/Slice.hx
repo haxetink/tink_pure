@@ -6,7 +6,7 @@ import tink.Slice as MSlice;
 @:pure
 @:jsonParse(a -> tink.pure.Slice.ofArray(a))
 @:jsonStringify(slice -> [for (x in slice) x])
-abstract Slice<T>(MSlice<T>) to MSlice<T> to Iterable<T> {
+abstract Slice<T>(MSlice<T>) to MSlice<T> {
 
   inline function new(v:MSlice<T>)
     this = v;
@@ -32,4 +32,5 @@ abstract Slice<T>(MSlice<T>) to MSlice<T> to Iterable<T> {
   @:from static public inline function ofVector<T>(v:haxe.ds.Vector<T>)
     return make(v);
 
+  @:to inline function toIterable() return (this: Iterable<T>);
 }
