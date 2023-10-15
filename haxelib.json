@@ -14,8 +14,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Added Dict and Vector",
-	"version": "0.6.0",
+	"releasenote": "Added Dict.fold() and Vector.count() methods, added key value iterators to lists of Pair / NamedWith, allowed implicit cast from Dict to Map, made Slice and Vector iterables.",
+	"version": "0.7.0",
 	"url": "http://haxetink.org/tink_pure",
 	"dependencies": {
 		"tink_slice": "",
