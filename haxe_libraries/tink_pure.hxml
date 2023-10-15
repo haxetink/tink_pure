@@ -1,4 +1,4 @@
 -lib tink_core
 -lib tink_slice
 -cp src
--D tink_pure=0.5.2
+-D tink_pure=0.6.0
