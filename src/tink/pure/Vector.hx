@@ -33,22 +33,25 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> to Iterable<T> {
     a.sort(compare);
     return new Vector(a);
   }
-  
+
   public inline function slice(pos, end)
     return new Vector(this.slice(pos, end));
-  
+
   public inline function count(f)
     return Lambda.count(this, f);
-  
+
   public inline function exists(f)
     return Lambda.exists(this, f);
-  
+
   public inline function find(f)
     return Lambda.find(this, f);
-  
+
+  public inline function findIndex(f)
+    return Lambda.findIndex(this, f);
+
   public inline function fold<R>(f:(v:T, result:R)->R, init:R)
     return Lambda.fold(this, f, init);
-  
+
   public inline function with(index:Int, value:T):Vector<T> {
     final arr = this.copy();
     arr[index] = value;
@@ -62,7 +65,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> to Iterable<T> {
   @:op(a & b)
   static inline function lconcat<T>(a:Vectorlike<T>, b:Vector<T>)
     return new Vector(a.concat(b.unwrap()));
-  
+
   static public inline function empty<T>():Vector<T> {
     return new Vector<T>([]);
   }
@@ -103,7 +106,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> to Iterable<T> {
       typed = typeExpr(e);
       stored = storeTypedExpr(typed);
     }
-    
+
     return switch typed.expr {
       case TArrayDecl(_) | TNew(_.get() => {pack: [], name: 'Array'}, [_], []):
         macro @:pos(e.pos) @:privateAccess new tink.pure.Vector($stored);
