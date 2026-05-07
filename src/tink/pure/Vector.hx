@@ -34,7 +34,7 @@ abstract Vector<T>(Array<T>) to Vectorlike<T> to Iterable<T> {
     return new Vector(a);
   }
 
-  public inline function slice(pos, end)
+  public inline function slice(pos, ?end)
     return new Vector(this.slice(pos, end));
 
   public inline function count(f)
